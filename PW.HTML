@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundWave | Cultura & Recomendaciones Musicales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d0d12;
+            --card-bg: #16161f;
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #262635;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Navegación */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 8%;
+            background: rgba(13, 13, 18, 0.92);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--text-main);
+        }
+
+        /* Hero Principal */
+        .hero {
+            text-align: center;
+            padding: 4.5rem 8% 2.5rem;
+            background: radial-gradient(circle at top, rgba(139, 92, 246, 0.16), transparent 60%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Buscador */
+        .search-box {
+            max-width: 450px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.85rem 1.4rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Filtros de Género */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid #2a2a3c;
+            padding: 0.6rem 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Grid de Bandas */
+        .container {
+            padding: 0 8% 4rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-footer {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Ventana Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            max-width: 650px;
+            width: 100%;
+            padding: 2.2rem;
+            position: relative;
+            animation: aparecer 0.25s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-history {
+            color: #d1d5db;
+            font-size: 0.98rem;
+            margin: 1.2rem 0;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .albums-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin: 1.2rem 0 0.6rem;
+            font-weight: 700;
+        }
+
+        .album-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .album-list li {
+            background: var(--bg-dark);
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 850px) {
+            .hero h1 { font-size: 2.2rem; }
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Sound<span>Wave</span></div>
+        <nav>
+            <a href="#recomendaciones">Artistas & Bandas</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Tu dosis diaria de buena música</h1>
+        <p>Explora historias detalladas y discografías completas de tus bandas, artistas y compositores favoritos en un diseño limpio y moderno.</p>
+        
+        <div class="search-box">
+            <input type="text" id="buscador" placeholder="🔍 Buscar banda o compositor..." onkeyup="buscarArtista()">
+        </div>
+
+        <div class="filters" id="recomendaciones">
+            <button class="filter-btn active" onclick="filtrar('todos', this)">Todos</button>
+            <button class="filter-btn" onclick="filtrar('rock', this)">Rock & Indie</button>
+            <button class="filter-btn" onclick="filtrar('postpunk', this)">Post-Punk & Dark</button>
+            <button class="filter-btn" onclick="filtrar('jrock', this)">Escena Japonesa</button>
+            <button class="filter-btn" onclick="filtrar('clasica', this)">Música Clásica</button>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="grid" id="grid-bandas">
+            <!-- Las tarjetas se generan dinámicamente -->
+        </div>
+    </main>
+
+    <!-- Modal de Información e Historia Ampliada -->
+    <div class="modal-overlay" id="modal" onclick="cerrarModal(event)">
+        <div class="modal-content">
+            <button class="close-btn" onclick="cerrarModalDirecto()">&times;</button>
+            <span class="tag" id="modal-tag">Género</span>
+            <h2 id="modal-nombre">Nombre del Artista</h2>
+            <p class="modal-history" id="modal-historia">Historia detallada...</p>
+            
+            <h4 class="albums-title">💿 Álbumes Destacados</h4>
+            <ul class="album-list" id="modal-albumes"></ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Diseñado y desplegado gratuitamente en Vercel • 2026</p>
+    </footer>
+
+    <script>
+        const artistas = [
+            // ROCK & INDIE
+            {
+                nombre: "Arctic Monkeys",
+                categoria: "rock",
+                etiqueta: "Indie Rock",
+                resumen: "Originarios de Sheffield, evolucionaron del garage rock acelerado a sonidos oscuros y elegantes.",
+                historia: "Formados en 2002 en High Green, Sheffield, los Arctic Monkeys se convirtieron en un fenómeno cultural sin precedentes al utilizar internet y las redes sociales de los inicios (como MySpace) para distribuir su música de manera independiente antes de firmar con un sello discográfico. Liderados por la genialidad lírica y composición de Alex Turner, su sonido ha mutado radicalmente a lo largo de los años: desde el rock fiestero y juvenil cargado de ironía de su debut, pasando por la experimentación guitarrera y sombría de 'Humbug', hasta la consolidación global de estadios con 'AM' y la sofisticación lounge-cinematográfica de sus discos más recientes.",
+                albumes: ["Whatever People Say I Am... (2006)", "Favourite Worst Nightmare (2007)", "Humbug (2009)", "AM (2013)", "Tranquility Base Hotel & Casino (2018)"]
+            },
+            {
+                nombre: "Enjambre",
+                categoria: "rock",
+                etiqueta: "Rock Alternativo",
+                resumen: "Banda mexicana con estética retro y letras melancólicas inspiradas en baladas clásicas.",
+                historia: "Fundada originalmente en Santa Ana, California, por los hermanos Navejas y consolidada posteriormente en Zacatecas, México, Enjambre logró construir una identidad única dentro de la escena latinoamericana. Su propuesta destaca por rescatar las texturas cálidas de los órganos Hammond, sintetizadores analógicos y arreglos de guitarras propios de la balada romántica de los años 60 y 70, fusionados con la energía del rock contemporáneo. Con un lirismo poético, nostálgico y existencial, se han ganado un lugar muy especial en el corazón de miles de seguidores.",
+                albumes: ["El Segundo es Felino (2008)", "Daltónico (2010)", "Huéspedes del Orbe (2012)", "Proaño (2014)", "Próximos Prójimos (2020)"]
+            },
+            {
+                nombre: "Eyedress",
+                categoria: "rock",
+                etiqueta: "Bedroom Pop / Indie",
+                resumen: "Proyecto filipino que fusiona lo-fi, post-punk, synth-pop y ritmos relajados.",
+                historia: "Idris Vicuña, conocido artísticamente como Eyedress, comenzó este proyecto de manera íntima y casera desde su habitación en Manila, Filipinas. Su música es un collage sonoro fascinante que entrelaza la urgencia y las líneas de bajo oscuras del post-punk con la estética relajada, polvorienta y melancólica del lo-fi y el bedroom pop. A través de internet, su propuesta conectó con una audiencia global masiva, convirtiéndose en un estandarte de la música independiente contemporánea y logrando colaboraciones internacionales de gran renombre.",
+                albumes: ["Manila Ice (2017)", "Sensitive G (2018)", "Let's Skip to the Wedding (2020)", "Mulholland Drive (2021)"]
+            },
+            {
+                nombre: "Maná",
+                categoria: "rock",
+                etiqueta: "Rock Latino",
+                resumen: "Una de las bandas más influyentes del rock pop en español con fusiones de ritmos latinos.",
+                historia: "Originarios de Guadalajara, Jalisco, Maná evolucionó desde sus inicios en los años 80 (bajo el nombre de Sombrero Verde) hasta convertirse en la banda de rock en español más exitosa y comercialmente importante del planeta. Liderados por la distintiva voz de Fher Olvera y la potencia rítmica de Alex González en la batería, el grupo supo integrar el rock de estadio anglosajón con ritmos latinos, reggae, calypso y baladas inolvidables. Además de su legado musical, la banda ha destacado internacionalmente por su activismo ambiental y defensa de los derechos humanos.",
+                albumes: ["¿Dónde Jugarán los Niños? (1992)", "Cuando los Ángeles Lloran (1995)", "Sueños Líquidos (1997)", "Revolución de Amor (2002)"]
+            },
+            {
+                nombre: "Green Day",
+                categoria: "rock",
+                etiqueta: "Punk Rock",
+                resumen: "Trío californiano clave en el resurgimiento del punk rock y creadores de óperas rock.",
+                historia: "Formados en 1987 en el circuito underground de California por Billie Joe Armstrong y Mike Dirnt (a quienes después se sumó Tré Cool), Green Day fue el principal responsable de llevar el punk rock de vuelta a las listas de popularidad masiva en la década de los 90 gracias al icónico álbum 'Dookie'. Lejos de estancarse, el grupo demostró una versatilidad descomunal al reinventar su sonido dos décadas después con 'American Idiot', una ambiciosa ópera rock de protesta política que redefinió por completo su carrera y su estatus como leyendas vivientes.",
+                albumes: ["Dookie (1994)", "Insomniac (1995)", "Nimrod (1997)", "American Idiot (2004)", "21st Century Breakdown (2009)"]
+            },
+            {
+                nombre: "Oasis",
+                categoria: "rock",
+                etiqueta: "Britpop",
+                resumen: "Íconos del britpop de los 90 liderados por los hermanos Gallagher.",
+                historia: "Nacidos en el corazón obrero de Mánchester en 1991, Oasis capturó la actitud, el exceso y la euforia de la juventud británica de los 90, convirtiéndose en el epicunto del movimiento britpop junto a Blur. Liderados por la tormentosa pero brillante dinámica entre los hermanos Liam y Noel Gallagher, la banda combinó melodías monumentales inspiradas en los Beatles, paredes de guitarras distorsionadas y una actitud desafiante que los catapultó a llenar estadios históricos como Knebworth, dejando himnos generacionales imborrables.",
+                albumes: ["Definitely Maybe (1994)", "(What's the Story) Morning Glory? (1995)", "Be Here Now (1997)", "Don't Believe the Truth (2005)"]
+            },
+            {
+                nombre: "The Beatles",
+                categoria: "rock",
+                etiqueta: "Rock Clásico",
+                resumen: "La banda de Liverpool que transformó para siempre la historia de la música popular.",
+                historia: "Integrada por John Lennon, Paul McCartney, George Harrison y Ringo Starr, el cuarteto de Liverpool es ampliamente considerado el grupo más influyento, importante y revolucionario de la historia de la música moderna. En menos de una década de trayectoria activa en los años 60, transformaron radicalmente la composición de canciones, la cultura juvenil, la moda y las técnicas de grabación en estudio, evolucionando de un pop melódico e inocente a obras maestras de la vanguardia, la experimentación y el rock conceptual.",
+                albumes: ["Rubber Soul (1965)", "Revolver (1966)", "Sgt. Pepper's Lonely Hearts... (1967)", "Abbey Road (1969)"]
+            },
+            {
+                nombre: "Nirvana",
+                categoria: "rock",
+                etiqueta: "Grunge",
+                resumen: "Pioneros del sonido grunge de Seattle que cambiaron el panorama del rock en los 90.",
+                historia: "Surgidos de la escena independiente de Seattle a finales de los 80, Nirvana y su carismático líder Kurt Cobain dinamitaron la industria musical global a finales de 1991 con el lanzamiento de 'Nevermind'. Su mezcla cruda, visceral y honesta de punk rock, melodías pop y pesadez metálica dio voz a la frustración y la apatía de toda una generación (la Generación X). Aunque su trayectoria fue trágicamente corta, su impacto cultural sigue resonando con fuerza inagotable en el ADN del rock mundial.",
+                albumes: ["Bleach (1989)", "Nevermind (1991)", "In Utero (1993)", "MTV Unplugged in New York (1994)"]
+            },
+            {
+                nombre: "The Strokes",
+                categoria: "rock",
+                etiqueta: "Garage / Indie Rock",
+                resumen: "Los arquitectos del renacimiento del rock neoyorquino a principios del siglo XXI.",
+                historia: "Formados en Nueva York en 1998 y liderados por la enigmática figura de Julian Casablancas, The Strokes irrumpieron en el año 2001 con su álbum debut 'Is This It', revitalizando casi por obra de magia el rock de guitarras a nivel mundial. Con un estilo despreocupado, trajes ajustados, líneas de bajo frenéticas y voces distorsionadas a través de amplificadores pequeños, crearon el sonido definitivo de la modernidad urbana, influyendo directamente en prácticamente todas las bandas de indie rock que surgieron a lo largo de los dosmiles.",
+                albumes: ["Is This It (2001)", "Room on Fire (2003)", "First Impressions of Earth (2006)", "The New Abnormal (2020)"]
+            },
+            {
+                nombre: "Caifanes",
+                categoria: "rock",
+                etiqueta: "Rock Mexicano",
+                resumen: "Pilar fundamental del rock en español que fusiona post-punk oscuro con raíces mexicanas.",
+                historia: "Surgidos en la Ciudad de México a finales de los años 80, Caifanes (con Saúl Hernández, Alfonso André, Sabo Romo y posteriormente la incorporación de Diego Herrera y Alejandro Marcovich) fundó las bases de lo que hoy conocemos como rock en tu idioma. Su propuesta artística combinó de manera brillante la influencia del post-punk británico más oscuro (como The Cure y Joy Division) con una profunda mística, poesía urbana, folclor e imaginería tradicional mexicana, creando himnos atemporales que marcaron a generaciones enteras.",
+                albumes: ["Caifanes (1988)", "El Diablito (1990)", "El Silencio (1992)", "El Nervio del Volcán (1994)"]
+            },
+            {
+                nombre: "Mac DeMarco",
+                categoria: "rock",
+                etiqueta: "Slacker Rock / Indie",
+                resumen: "Cantautor canadiense famoso por sus guitarras cálidas con chorus y estilo relajado.",
+                historia: "Nacido en Columbia Británica, Canadá, Mac DeMarco se convirtió en uno de los personajes más queridos y singulares de la música independiente global gracias a su estética desenfadada, su sentido del humor y su peculiar forma de componer. Utilizando equipo analógico viejo y guitarras pasadas por efectos de chorus y vibrato, acuñó un sonido cálido, nostálgico y perezoso conocido popularmente como 'slacker rock' o jangle pop casero, inspirando a millones de jóvenes a crear su propia música desde la comodidad de sus casas.",
+                albumes: ["2 (2012)", "Salad Days (2014)", "Another One (2015)", "This Old Dog (2017)"]
+            },
+            {
+                nombre: "Los Bunkers",
+                categoria: "rock",
+                etiqueta: "Rock Chileno",
+                resumen: "Banda chilena que combina el rock clásico de los 60 con la tradición folclórica de su país.",
+                historia: "Originarios de la ciudad de Concepción, Chile, Los Bunkers se consolidaron a lo largo de los años 2000 como una de las agrupaciones de rock más sólidas, respetadas y queridas de toda Latinoamérica. Su propuesta musical destaca por una ejecución instrumental impecable, exquisitas armonías vocales a varias voces y una maestría única para fusionar la energía del rock clásico británico (con ecos claros de los Beatles y The Byrds) con la poesía, la raíz folclórica y el compromiso social de la nueva canción chilena.",
+                albumes: ["La Culpa (2003)", "Vida de Perros (2005)", "Barrio Estación (2008)", "Noviembre (2023)"]
+            },
+            {
+                nombre: "Vacations",
+                categoria: "rock",
+                etiqueta: "Indie Pop / Dream Pop",
+                resumen: "Cuarteto australiano conocido por sus melodías suaves, melancólicas y guitarras cristalinas.",
+                historia: "Formados en Newcastle, Australia, y liderados por Campbell Burns, Vacations comenzó como un proyecto de dormitorio enfocado en capturar sensaciones de introspección, sol y melancolía veraniega. Con el tiempo, la banda evolucionó hacia un sonido de estudio pulido pero fiel a sus raíces de dream pop e indie rock, caracterizado por guitarras cristalinas y ganchos vocales sumamente adictivos que los han llevado a conquistar millones de oyentes en todo el mundo a través de plataformas digitales.",
+                albumes: ["Vibes (2016)", "Changes (2018)", "Forever in Bloom (2020)", "No Place Like Home (2024)"]
+            },
+            {
+                nombre: "Tame Impala",
+                categoria: "rock",
+                etiqueta: "Rock Psicodélico",
+                resumen: "Proyecto musical de Kevin Parker que mezcla psicodelia moderna, sintetizadores y funk.",
+                historia: "Tame Impala es, en esencia, el vehículo creativo del multiinstrumentista australiano Kevin Parker, quien escribe, interpreta, graba y mezcla prácticamente toda la música en solitario desde su estudio. Originario de Perth, Parker rescató los sonidos psicodélicos de los años 60 y los reinventó para el siglo XXI utilizando baterías pesadas, sintetizadores espaciales y texturas envolventes, revolucionando no solo el rock psicodélico sino también la producción de la música pop y electrónica actual.",
+                albumes: ["Innerspeaker (2010)", "Lonerism (2012)", "Currents (2015)", "The Slow Rush (2020)"]
+            },
+            {
+                nombre: "Perfecto Miserable",
+                categoria: "rock",
+                etiqueta: "Indie Rock / Alternativo",
+                resumen: "Propuesta alternativa cargada de sensibilidad lírica, guitarras atmosféricas y crudeza emocional.",
+                historia: "Perfecto Miserable representa el pulso fresco y honesto de las nuevas vertientes del rock alternativo e indie en español. Su música se caracteriza por explorar los rincones más profundos de la vulnerabilidad juvenil, la nostalgia cotidiana y los dilemas existenciales a través de texturas de guitarras atmosféricas y líricas sumamente cuidadas que buscan conectar de forma directa y genuina con el oyente.",
+                albumes: ["Sencillos y EPs Independientes", "Sesiones en Vivo"]
+            },
+            {
+                nombre: "Gorillaz",
+                categoria: "rock",
+                etiqueta: "Alternativo / Electrónica",
+                resumen: "La banda virtual más famosa del mundo, creada por Damon Albarn y Jamie Hewlett.",
+                historia: "Concebida en 1998 por el músico Damon Albarn (cantante de Blur) y el historietista Jamie Hewlett, Gorillaz rompió todas las reglas de la industria al presentarse como una banda conformada por miembros animados (2-D, Murdoc, Noodle y Russel). Musicalmente, el proyecto es un crisol inagotable de géneros donde conviven el rock alternativo, el hip-hop, la electrónica, el dub, el pop y colaboraciones con leyendas de todas las épocas, consolidándose como un hito absoluto de la cultura pop moderna.",
+                albumes: ["Gorillaz (2001)", "Demon Days (2005)", "Plastic Beach (2010)", "Song Machine (2020)"]
+            },
+            {
+                nombre: "Metallica",
+                categoria: "rock",
+                etiqueta: "Thrash / Heavy Metal",
+                resumen: "Gigantes del metal estadounidense reconocidos por su velocidad, técnica y riffs históricos.",
+                historia: "Fundados en Los Ángeles en 1981 por el vocalista y guitarrista James Hetfield y el baterista Lars Ulrich, Metallica se convirtió en la banda de heavy metal más importante, influyente y vendedora de todos los tiempos. Fueron pioneros absolutos del movimiento thrash metal en los años 80 con discos rápidos, furiosos y técnicamente complejos, para después dar un giro masivo en 1991 con su icónico 'Black Album', llevando el poder del metal a las masas globales y llenando estadios enteros por más de cuatro décadas.",
+                albumes: ["Ride the Lightning (1984)", "Master of Puppets (1986)", "...And Justice for All (1988)", "Metallica (1991)"]
+            },
+            {
+                nombre: "El Cuarteto de Nos",
+                categoria: "rock",
+                etiqueta: "Rock Alternativo",
+                resumen: "Banda uruguaya célebre por sus letras ingeniosas, humor ácido y crítica social.",
+                historia: "Formados en Montevideo a principios de los años 80, El Cuarteto de Nos transitó por diversas etapas antes de convertirse en un referente indiscutible del rock latinoamericano. Con la pluma afilada, irónica y de brillante agudeza narrativa de su líder Roberto Musso, la banda transformó sus canciones en verdaderos ensayos sociológicos disfrazados de rock alternativo, caracterizándose por juegos de palabras complejos, personajes excéntricos y una mirada clínica y sarcástica sobre la naturaleza humana.",
+                albumes: ["Raro (2006)", "Bipolar (2009)", "Porfiado (2012)", "Jueves (2019)", "Lámina Once (2022)"]
+            },
+            {
+                nombre: "Zoé",
+                categoria: "rock",
+                etiqueta: "Rock Psicodélico / Espacial",
+                resumen: "Referentes del rock alternativo mexicano con letras poéticas y atmósferas espaciales.",
+                historia: "Liderados por León Larregui desde su gestación a finales de los 90 en Cuernavaca y la Ciudad de México, Zoé logró forjar un sonido único e inconfundible dentro del rock en español. Su propuesta se distingue por la construcción de texturas sonoras espaciales, sintetizadores etéreos, guitarras psicodélicas y un lirismo críptico, romántico y plagado de metáforas cósmicas que convirtieron a la banda en un auténtico fenómeno de masas y en una de las agrupaciones más influyentes de los últimos tiempos en Iberoamérica.",
+                albumes: ["Rocanlover (2003)", "Memo Rex Commander... (2006)", "Reptilectric (2008)", "Música de Fondo (2011)", "Aztlán (2018)"]
+            },
+
+            // POST-PUNK & DARK
+            {
+                nombre: "Molchat Doma",
+                categoria: "postpunk",
+                etiqueta: "Post-Punk / Coldwave",
+                resumen: "Trío bielorruso que revive el sonido frío de los sintetizadores soviéticos de los 80.",
+                historia: "Formados en Minsk, Bielorrusia, en 2017, Molchat Doma (Молчат Дома) irrumpió en la escena global convirtiéndose en los abanderados contemporáneos del movimiento coldwave y post-punk oscuro. Su música evoca la arquitectura brutalista y la atmósfera de la Europa Oriental de la época soviética mediante el uso de cajas de ritmos mecánicas, líneas de bajo profundas, guitarras gélidas y la voz profundamente melancólica y solemne de Egor Shkutko cantando en ruso.",
+                albumes: ["S Krysh Nashikh Domov (2017)", "Etazhi (2018)", "Monument (2020)", "Belaya Polosa (2024)"]
+            },
+            {
+                nombre: "Depresión Sonora",
+                categoria: "postpunk",
+                etiqueta: "Post-Punk Español",
+                resumen: "Proyecto del madrileño Marcos Crespo que retrata el desencanto moderno con ritmos hipnóticos.",
+                historia: "Surgido en el madrileño barrio de Vallecas en medio del confinamiento de 2020, Depresión Sonora es el proyecto unipersonal de Marcos Crespo. Con una sensibilidad muy propia de la generación actual, su propuesta canaliza la ansiedad, el hastío, la apatía y el desencanto juvenil a través de ritmos de caja de ritmos bailable pero oscuros, bajos envolventes y letras directas, sinceras y sin filtros que conectaron instantáneamente con miles de jóvenes en todo el mundo hispanohablante.",
+                albumes: ["Depresión Sonora EP (2020)", "Historias Tristes para Dormir Bien (2021)", "El Arte de Morir Muy Despacio (2022)"]
+            },
+            {
+                nombre: "The Stranglers",
+                categoria: "postpunk",
+                etiqueta: "Punk / Post-Punk",
+                resumen: "Veteranos del punk británico famosos por su sonido oscuro liderado por el bajo y los teclados.",
+                historia: "Formados en el Reino Unido en 1974, The Stranglers se asociaron inicialmente con la primera ola del punk rock británico, aunque musicalmente siempre se mantuvieron un paso más adelante gracias a su sofisticación. Alejados del ruido simple, destacaron por incorporar un sonido de teclado con tintes barrocos y circenses (a cargo de Dave Greenfield) y unas líneas de bajo increíblemente agresivas, melódicas y dominantes (interpretadas por Jean-Jacques Burnel), convirtiéndose en pioneros absolutos del post-punk y la new wave.",
+                albumes: ["Rattus Norvegicus (1977)", "No More Heroes (1977)", "Black and White (1978)", "La Folie (1981)"]
+            },
+
+            // ESCENA JAPONESA (J-ROCK / J-POP)
+            {
+                nombre: "Ado",
+                categoria: "jrock",
+                etiqueta: "J-Rock / Vocaloid Style",
+                resumen: "Potente vocalista japonesa famosa por su rango vocal explosivo e identidad anónima.",
+                historia: "Ado comenzó su carrera como una cantante 'utaite' en internet compartiendo versiones de canciones hechas con software Vocaloid desde su habitación. Su vida cambió radicalmente en 2020 cuando debutó profesionalmente con el sencillo 'Usseewa', un éxito rotundo que arrasó en las listas de Japón. Manteniendo su anonimato y sin mostrar su rostro públicamente, Ado se ha consagrado como una superestrella musical gracias a su voz desgarradora, su enorme versatilidad interpretativa y su capacidad única de pasar de un susurro delicado a un grito de furia pura.",
+                albumes: ["Kyōgen (2022)", "Uta's Songs: One Piece Film Red (2022)", "Zanmu (2024)"]
+            },
+            {
+                nombre: "Eve",
+                categoria: "jrock",
+                etiqueta: "J-Rock / Indie Pop",
+                resumen: "Cantautor japonés que combina rock alternativo veloz con videoclips animados cinematográficos.",
+                historia: "Al igual que otros grandes talentos de su generación, Eve dio sus primeros pasos en la escena independiente de internet haciendo covers y produciendo canciones con sintetizadores de voz. Con el tiempo, consolidó su proyecto como cantautor de J-Rock y pop alternativo, caracterizado por guitarras veloces, melodías sumamente dinámicas y un universo estético muy particular. Sus canciones suelen venir acompañadas de producciones audiovisuales y videoclips de animación impecables y de alto nivel cinematográfico.",
+                albumes: ["Bunka (2017)", "Otogi (2019)", "Smile (2020)", "Kaizin (2022)"]
+            },
+            {
+                nombre: "Official HIGE DANdism",
+                categoria: "jrock",
+                etiqueta: "Piano Pop / J-Rock",
+                resumen: "Cuarteto japonés famoso por sus arreglos brillantes de piano, metales y melodías épicas.",
+                historia: "Formados en 2012 en la prefectura de Shimane, Japón, Official HIGE DANdism (frecuentemente llamados 'Higedan') conquistó la cima de la industria musical asiática gracias a una propuesta sofisticada que fusiona el pop de piano, arreglos de metales propios del funk y la fuerza melódica del J-Rock. Liderados por la impresionante potencia vocal de Satoshi Fujihara, destacan por canciones de estructuras complejas pero sumamente pegadizas que dominan todas las listas de éxitos.",
+                albumes: ["Escaparade (2018)", "Traveler (2019)", "Editorial (2021)", "Rejoice (2024)"]
+            },
+            {
+                nombre: "Fujii Kaze",
+                categoria: "jrock",
+                etiqueta: "J-Pop / R&B / Soul",
+                resumen: "Pianista y cantautor prodigio que fusiona pop japonés con R&B, jazz y mensajes filosóficos.",
+                historia: "Criado en la prefectura de Okayama, Japón, Fujii Kaze creció tocando el piano clásico y de jazz que su padre le enseñaba, subiendo videos a internet desde su adolescencia. Su debut oficial en 2020 sacudió la escena musical por su talento natural descomunal, su cálida voz y una propuesta que mezcla con maestría el R&B contemporáneo, el soul, el jazz y el pop japonés, acompañados siempre por un mensaje espiritual, alegre y de profunda paz interior.",
+                albumes: ["Help Ever Hurt Never (2020)", "Love All Serve All (2022)"]
+            },
+            {
+                nombre: "Asian Kung-Fu Generation",
+                categoria: "jrock",
+                etiqueta: "J-Rock Alternativo",
+                resumen: "Banda fundamental del rock alternativo japonés de los 2000 con guitarras enérgicas.",
+                historia: "Formados en Yokohama en 1996, Asian Kung-Fu Generation es, sin lugar a dudas, una de las bandas más influyentes y respetadas de la historia del rock alternativo japonés. Con un sonido directo basado en guitarras gemelas rítmicas, melodías melancólicas y la voz inconfundible de Masafumi Gotoh, se convirtieron en pioneros globales al exportar el rock japonés a todo el mundo gracias a sus icónicas contribuciones musicales para legendarias series de anime.",
+                albumes: ["Kimi Tsunagi Five M (2003)", "Sol-fa (2004)", "Fanclub (2006)", "World World World (2008)"]
+            },
+            {
+                nombre: "Kenshi Yonezu",
+                categoria: "jrock",
+                etiqueta: "J-Rock / Art Pop",
+                resumen: "Compositor, productor e ilustrador considerado un genio musical del Japón moderno.",
+                historia: "Conocido en sus inicios bajo el seudónimo de 'Hachi' como uno de los compositores más célebres de la cultura Vocaloid, Kenshi Yonezu evolucionó hasta convertirse en uno de los artistas y productores más importantes y galardonados de todo Japón. Su música desafía los moldes comerciales tradicionales al mezclar elementos de J-Rock, electrónica, folk y art pop con letras poéticas y arreglos vanguardistas, rompiendo récords históricos de reproducciones a nivel internacional.",
+                albumes: ["Diorama (2012)", "Yankee (2014)", "Bootleg (2017)", "Stray Sheep (2020)", "Lost Corner (2024)"]
+            },
+
+            // MÚSICA CLÁSICA
+            {
+                nombre: "Frédéric Chopin",
+                categoria: "clasica",
+                etiqueta: "Romanticismo",
+                resumen: "El poeta del piano; maestro de los nocturnos, baladas y piezas cargadas de emoción.",
+                historia: "Compositor y pianista virtuoso polaco del siglo XIX, Frédéric Chopin es ampliamente recordado como 'el poeta del piano'. Prácticamente la totalidad de su obra escrita está dedicada en exclusiva al piano solo, instrumento al cual elevó a alturas expresivas nunca antes vistas. Su música destaca por un lirismo sumamente refinado, una delicadeza técnica exquisita y una profunda carga de melancolía, nostalgia y pasión patriótica inspirada en sus raíces polacas.",
+                albumes: ["Nocturnos (Op. 9, Op. 27)", "Baladas Nos. 1–4", "Estudios Op. 10 y 25", "Preludios Op. 28"]
+            },
+            {
+                nombre: "Antonio Vivaldi",
+                categoria: "clasica",
+                etiqueta: "Barroco",
+                resumen: "Compositor veneciano célebre por el dinamismo y dramatismo de sus conciertos para violín.",
+                historia: "Sacerdote católico y virtuoso violinista nacido en Venecia, Antonio Vivaldi fue una de las figuras más deslumbrantes y prolíficas del periodo Barroco en Europa. Conocido popularmente como 'Il Prete Rosso' (el cura rojo) debido al color de su cabello, revolucionó la estructura del concierto instrumental, aportando una energía rítmica vibrante, un enorme sentido teatral y una inventiva melódica sin igual, siendo su obra más célebre el ciclo de conciertos 'Las cuatro estaciones'.",
+                albumes: ["Las Cuatro Estaciones (1725)", "L'estro armonico Op. 3", "Gloria en Re Mayor RV 589"]
+            },
+            {
+                nombre: "Ludwig van Beethoven",
+                categoria: "clasica",
+                etiqueta: "Clasicismo / Romanticismo",
+                resumen: "Genio alemán que marcó la transición hacia el Romanticismo componiendo tras quedar sordo.",
+                historia: "Nacido en Bonn, Alemania, Ludwig van Beethoven es considerado uno de los compositores más grandes y transcendentales de la historia de la música universal. Su genio artístico marcó la bisagra histórica entre el Clasicismo de Mozart y Haydn y el nacimiento del Romanticismo. Lo más trágica y heroicamente fascinante de su biografía es que compuso gran parte de sus obras maestras más monumentales (incluyendo sus sinfonías más célebres) en absoluta sordera, desafiando a su destino con una fuerza de voluntad inquebrantable.",
+                albumes: ["Sinfonía No. 5", "Sinfonía No. 9 'Coral'", "Sonata 'Claro de Luna'", "Para Elisa"]
+            },
+            {
+                nombre: "Claude Debussy",
+                categoria: "clasica",
+                etiqueta: "Impresionismo",
+                resumen: "Pionero del impresionismo musical con armonías etéreas que pintan paisajes sonoros.",
+                historia: "Compositor francés que revolucionó la música culta a finales del siglo XIX al rechazar las rígidas reglas académicas del Romanticismo alemán. Inspirado por los pintores impresionistas y los poetas simbolistas de su época, Debussy ideó un lenguaje armónico completamente nuevo, caracterizado por escalas exóticas, timbres sutiles y texturas fluidas capaces de sugerir luces, sombras, la naturaleza y paisajes oníricos enteros a través del sonido (siendo 'Clair de Lune' su máxima expresión de esta magia).",
+                albumes: ["Suite bergamasque", "La Mer", "Preludio a la siesta de un fauno", "Arabesques"]
+            },
+            {
+                nombre: "Pyotr Ilyich Tchaikovsky",
+                categoria: "clasica",
+                etiqueta: "Romanticismo Tardío",
+                resumen: "Maestro ruso de la orquestación dramática y creador de los ballets más famosos del mundo.",
+                historia: "Máximo exponente del Romanticismo tardío en Rusia, Pyotr Ilyich Tchaikovsky poseía un talento innato y deslumbrante para escribir melodías de una intensidad emocional desgarradora, acompañadas de una maestría orquestal sin igual. Su música es tan trágica y apasionada como profundamente bella, abarcando desde sinfonías monumentales hasta los tres ballets más interpretados, amados y famosos de todos los tiempos ('El lago de los cisnes', 'El cascanueces' y 'La bella durmiente').",
+                albumes: ["El Lago de los Cisnes", "El Cascanueces", "Sinfonía No. 6 'Patética'", "Concierto para Piano No. 1"]
+            },
+            {
+                nombre: "Johann Sebastian Bach",
+                categoria: "clasica",
+                etiqueta: "Barroco",
+                resumen: "La cumbre del contrapunto y la arquitectura musical perfecta en la historia.",
+                historia: "Compositor y organista alemán perteneciente a una de las familias de músicos más ilustres de la historia, J.S. Bach es considerado la cumbre absoluta del periodo Barroco y el arquitecto supremo de la armonía occidental. Su obra monumental destaca por una complejidad matemática, espiritual y de contrapunto impecable que desafió los límites del intelecto y la emoción humana, sentando los cimientos estructurales sobre los cuales se construyó prácticamente toda la música culta posterior.",
+                albumes: ["Conciertos de Brandeburgo", "El Clave Bien Temperado", "Suites para Violonchelo", "Tocata y Fuga en Re menor"]
+            }
+        ];
+
+        const grid = document.getElementById("grid-bandas");
+
+        function renderizarArtistas(lista) {
+            grid.innerHTML = "";
+            lista.forEach((artista) => {
+                const card = document.createElement("article");
+                card.className = "card";
+                card.onclick = () => abrirModal(artista);
+                card.innerHTML = `
+                    <div>
+                        <span class="tag">${artista.etiqueta}</span>
+                        <h3>${artista.nombre}</h3>
+                        <p>${artista.resumen}</p>
+                    </div>
+                    <div class="card-footer">Ver historia y álbumes →</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filtrar(categoria, boton) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            boton.classList.add('active');
+            document.getElementById("buscador").value = "";
+
+            if (categoria === 'todos') {
+                renderizarArtistas(artistas);
+            } else {
+                const filtrados = artistas.filter(a => a.categoria === categoria);
+                renderizarArtistas(filtrados);
+            }
+        }
+
+        function buscarArtista() {
+            const texto = document.getElementById("buscador").value.toLowerCase();
+            const filtrados = artistas.filter(a => 
+                a.nombre.toLowerCase().includes(texto) || 
+                a.etiqueta.toLowerCase().includes(texto)
+            );
+            renderizarArtistas(filtrados);
+        }
+
+        function abrirModal(artista) {
+            document.getElementById("modal-tag").textContent = artista.etiqueta;
+            document.getElementById("modal-nombre").textContent = artista.nombre;
+            document.getElementById("modal-historia").textContent = artista.historia;
+            
+            const listaAlbumes = document.getElementById("modal-albumes");
+            listaAlbumes.innerHTML = "";
+            artista.albumes.forEach(album => {
+                const li = document.createElement("li");
+                li.textContent = album;
+                listaAlbumes.appendChild(li);
+            });
+
+            document.getElementById("modal").style.display = "flex";
+        }
+
+        function cerrarModal(event) {
+            if (event.target.id === "modal") {
+                cerrarModalDirecto();
+            }
+        }
+
+        function cerrarModalDirecto() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        // Cargar todos al inicio
+        renderizarArtistas(artistas);
+    </script>
+</body>
+</html>
